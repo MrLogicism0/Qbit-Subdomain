@@ -1,176 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Open Qbit</title>
-    <style>
-        /* Basic reset and body styling */
-        body {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            /* Dark theme background */
-            background-color: #1a1a1a;
-            /* Center content vertically and horizontally */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow: hidden; /* Prevent scrollbars */
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open Qbit</title>
+  <style>
+    /* General body setup */
+    body {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #0a0a23;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
 
-        /* Fancy button styling */
-        .fancy-button {
-            /* Text styling */
-            color: #ffffff;
-            font-size: 1.2em; /* Slightly larger text */
-            font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Subtle text shadow */
+    /* Qbit-themed button */
+    .qbit-button {
+      position: relative;
+      width: 300px;
+      height: 150px;
+      background: linear-gradient(135deg, #0c0c55, #10106d);
+      border: 3px solid rgba(0, 0, 255, 0.4);
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(0, 0, 255, 0.5);
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
 
-            /* Button dimensions and spacing */
-            padding: 18px 35px; /* Generous padding */
-            border: none; /* No default border */
-            border-radius: 50px; /* Fully rounded ends */
+    .qbit-button:hover {
+      background: linear-gradient(135deg, #151575, #1f1f9c);
+      transform: translateY(-6px);
+      box-shadow: 0 15px 40px rgba(0, 0, 255, 0.7);
+    }
 
-            /* Background gradient */
-            background: linear-gradient(135deg, #5e42a6, #b74e91); /* Purple/Pink gradient */
+    .qbit-bars {
+      position: absolute;
+      bottom: 30px;
+      left: 30px;
+      display: flex;
+      gap: 20px;
+    }
 
-            /* Shadows for depth */
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), /* Outer shadow */
-                        inset 0 -2px 5px rgba(0, 0, 0, 0.2), /* Inner bottom shadow */
-                        inset 0 2px 5px rgba(255, 255, 255, 0.3); /* Inner top highlight */
+    .qbit-bar {
+      width: 30px;
+      height: 80px;
+      background: #0015ff;
+      box-shadow: 0 0 12px #0015ff, 0 0 24px #0015ff;
+      animation: glow 2s infinite alternate;
+      border-radius: 5px;
+    }
 
-            /* Smooth transitions for hover effects */
-            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+    @keyframes glow {
+      from {
+        box-shadow: 0 0 12px #0015ff, 0 0 24px #0015ff;
+      }
+      to {
+        box-shadow: 0 0 18px #3c3cff, 0 0 28px #3c3cff;
+      }
+    }
 
-            cursor: pointer; /* Indicate interactivity */
-            outline: none; /* Remove default focus outline */
-        }
+    .qbit-text {
+      position: absolute;
+      right: 30px;
+      bottom: 25px;
+      color: white;
+      font-size: 2.5em;
+      font-weight: bold;
+      pointer-events: none;
+      text-shadow: 0 0 5px rgba(255,255,255,0.5);
+    }
 
-        /* Hover effect */
-        .fancy-button:hover {
-            /* Slightly lift the button */
-            transform: translateY(-3px);
-            /* Enhance shadows */
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4),
-                        inset 0 -2px 5px rgba(0, 0, 0, 0.2),
-                        inset 0 2px 5px rgba(255, 255, 255, 0.3);
-            /* Slightly change gradient on hover */
-            background: linear-gradient(135deg, #6a4bc2, #c85aa6);
-        }
-
-        /* Active (pressed) effect */
-        .fancy-button:active {
-            /* Push the button down */
-            transform: translateY(1px);
-            /* Reduce shadows for pressed look */
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3),
-                        inset 0 -1px 3px rgba(0, 0, 0, 0.2),
-                        inset 0 1px 3px rgba(255, 255, 255, 0.2);
-        }
-
-        /* Optional: Focus-visible style for accessibility */
-        .fancy-button:focus-visible {
-             box-shadow: 0 0 0 3px rgba(94, 66, 166, 0.7); /* Outline matching the gradient */
-        }
-
-    </style>
+  </style>
 </head>
 <body>
 
-    <button id="openQbitBtn" class="fancy-button">Click here to open Qbit!</button>
+  <button id="openQbitBtn" class="qbit-button">
+    <div class="qbit-bars">
+      <div class="qbit-bar"></div>
+      <div class="qbit-bar"></div>
+      <div class="qbit-bar"></div>
+    </div>
+    <div class="qbit-text">Qbit</div>
+  </button>
 
-    <script>
-        /**
-         * Opens a given URL within an iframe in a new about:blank window.
-         * @param {string} url - The URL to load in the iframe.
-         * @param {string} [title='Content'] - The title for the new window.
-         */
-        function openInAboutBlank(url, title = 'Content') {
-            console.log(`[DEBUG] Creating about:blank wrapper for: ${url}`);
-            // Basic URL validation
-            if (!url || typeof url !== 'string' || !url.match(/^https?:\/\/.+/)) {
-                console.error("Invalid URL provided:", url);
-                alert("Cannot open link: Invalid URL provided.");
-                return;
-            }
+  <script>
+    function openInAboutBlank(url, title = 'Content') {
+      if (!url || typeof url !== 'string' || !url.match(/^https?:\/\/.+/)) {
+        alert("Cannot open link: Invalid URL provided.");
+        return;
+      }
 
-            // Attempt to open a new blank window
-            const newWindow = window.open('', '_blank');
-
-            if (newWindow) {
-                try {
-                    // Write the necessary HTML structure to the new window
-                    newWindow.document.open();
-                    newWindow.document.write(`
-                        <!DOCTYPE html>
-                        <html lang="en">
-                        <head>
-                            <meta charset="UTF-8">
-                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                            <title>${title.replace(/</g, "&lt;")}</title> <style>
-                                /* Ensure iframe takes full space */
-                                html, body {
-                                    margin: 0;
-                                    padding: 0;
-                                    height: 100%;
-                                    overflow: hidden;
-                                    background-color: #000; /* Optional: background for the parent page */
-                                }
-                                iframe {
-                                    display: block; /* Remove potential extra space below iframe */
-                                    width: 100%;
-                                    height: 100%;
-                                    border: none; /* Remove default iframe border */
-                                }
-                            </style>
-                        </head>
-                        <body>
-                            <iframe src="${url}"
-                                    frameborder="0"
-                                    allowfullscreen
-                                    sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation">
-                            </iframe>
-                        </body>
-                        </html>`);
-                    newWindow.document.close(); // Finish writing to the document
-                    console.log("[DEBUG] about:blank wrapper written successfully.");
-                } catch (e) {
-                    console.error("Error writing to new window:", e);
-                    // Fallback: Try navigating the window directly (might be blocked)
-                    try {
-                        newWindow.location.href = url;
-                    } catch (e2) {
-                        console.error("Error navigating new window:", e2);
-                        alert("Could not open link. Please check if pop-ups are blocked.");
-                        newWindow.close(); // Close the window if navigation fails
-                    }
+      const newWindow = window.open('', '_blank');
+      if (newWindow) {
+        try {
+          newWindow.document.open();
+          newWindow.document.write(`
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>${title.replace(/</g, "&lt;")}</title>
+              <style>
+                html, body {
+                  margin: 0;
+                  padding: 0;
+                  height: 100%;
+                  overflow: hidden;
+                  background: #000;
                 }
-            } else {
-                // Error if window.open failed (likely due to pop-up blocker)
-                console.error("Failed to open new window. Pop-up blocker might be active.");
-                alert("Could not open link. Please disable your pop-up blocker for this site.");
-            }
+                iframe {
+                  width: 100%;
+                  height: 100%;
+                  border: none;
+                }
+              </style>
+            </head>
+            <body>
+              <iframe src="${url}" frameborder="0"
+                allowfullscreen sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation">
+              </iframe>
+            </body>
+            </html>`);
+          newWindow.document.close();
+        } catch (e) {
+          try {
+            newWindow.location.href = url;
+          } catch (e2) {
+            alert("Could not open link. Please check if pop-ups are blocked.");
+            newWindow.close();
+          }
         }
+      } else {
+        alert("Could not open link. Please disable your pop-up blocker for this site.");
+      }
+    }
 
-        // Get a reference to the button element
-        const openButton = document.getElementById('openQbitBtn');
-
-        // Check if the button exists before adding the listener
-        if (openButton) {
-            // Add a click event listener to the button
-            openButton.addEventListener('click', () => {
-                const qbitUrl = "https://angelxdripunity.github.io/";
-                const windowTitle = "Qbit";
-                // Call the function to open the URL when the button is clicked
-                openInAboutBlank(qbitUrl, windowTitle);
-            });
-        } else {
-            console.error("Button with ID 'openQbitBtn' not found.");
-        }
-    </script>
+    document.getElementById('openQbitBtn').addEventListener('click', () => {
+      const qbitUrl = "https://angelxdripunity.github.io/";
+      const windowTitle = "Qbit";
+      openInAboutBlank(qbitUrl, windowTitle);
+    });
+  </script>
 
 </body>
 </html>
